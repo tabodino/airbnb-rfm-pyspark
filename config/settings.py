@@ -34,10 +34,10 @@ class DataConfig(BaseSettings):
     )
 
     reviews_url: str = (
-        "http://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/data/reviews.csv.gz"
+        "https://data.insideairbnb.com/france/nouvelle-aquitaine/bordeaux/2025-09-18/data/listings.csv.gz"
     )
     listings_url: str = (
-        "http://data.insideairbnb.com/france/ile-de-france/paris/2025-09-12/data/listings.csv.gz"
+        "https://data.insideairbnb.com/france/nouvelle-aquitaine/bordeaux/2025-09-18/data/reviews.csv.gz"
     )
 
     data_dir: Path = Path("data")
