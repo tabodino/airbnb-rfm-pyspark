@@ -6,7 +6,7 @@ FROM eclipse-temurin:17-jre AS jre
 # -----------------------------------------------------------------------------
 # Stage 2: Python Base with JRE
 # -----------------------------------------------------------------------------
-FROM python:3.12-slim AS base
+FROM python:3.12-slim-bookworm AS base
 
 # Prevent interactive prompts during build
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     wget \
     ca-certificates \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Verify Java installation
@@ -44,8 +45,12 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 # Copy dependency files (enables Docker layer caching)
 COPY pyproject.toml README.md ./
 
+ENV VIRTUAL_ENV=/app/.venv
+RUN uv venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Install dependencies without cache (smaller image)
-RUN uv pip install --system --no-cache-dir -e .
+RUN uv pip install --no-cache-dir .
 
 # -----------------------------------------------------------------------------
 # Stage 4: Runtime - Final application image
@@ -54,26 +59,23 @@ FROM base AS runtime
 
 WORKDIR /app
 
-# Copy installed dependencies from previous stage
-COPY --from=dependencies /usr/local /usr/local
+# Create non-root user 
+RUN groupadd -r appuser && useradd -r -g appuser -u 1001 appuser \ 
+    && mkdir -p /app && chown -R appuser:appuser /app
 
-# Copy application code
-COPY config/ ./config/
-COPY src/ ./src/
-COPY pyproject.toml README.md ./
-COPY .env.example ./.env
+COPY --from=dependencies --chown=appuser:appuser /app/.venv /app/.venv
 
-# Create necessary directories
-RUN mkdir -p data logs
-
-# Set Python path for imports
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 ENV PYTHONPATH=/app
 
-# -----------------------------------------------------------------------------
-# Security: Create non-root user
-# -----------------------------------------------------------------------------
-RUN groupadd -r appuser && useradd -r -g appuser -u 1001 appuser \
-    && chown -R appuser:appuser /app
+# Copy application code
+COPY --chown=appuser:appuser config/ ./config/
+COPY --chown=appuser:appuser src/ ./src/
+COPY --chown=appuser:appuser pyproject.toml README.md ./
+
+# Create necessary directories
+RUN mkdir -p data logs && chown -R appuser:appuser data logs
 
 USER appuser
 
@@ -91,4 +93,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 # -----------------------------------------------------------------------------
 # Startup command
 # -----------------------------------------------------------------------------
-CMD ["streamlit", "run", "src/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "src/airbnb_rfm_pyspark/app.py", "--server.port=8501", "--server.address=0.0.0.0"]

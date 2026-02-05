@@ -53,7 +53,17 @@ def normalize_date_column(
     """
     Normalizes a date column to a standard format.
     """
-    df_normalized = df.withColumn(date_col, F.try_to_date(F.col(date_col), date_format))
+    # Filter out invalid formats BEFORE calling to_date()
+    df_valid = df.filter(
+        F.col(date_col).isNull()
+        | F.col(date_col).rlike(r"^\d{4}[-/]\d{1,2}[-/]\d{1,2}")
+    )
+
+    # Now safely convert to date
+    df_normalized = df_valid.withColumn(date_col, F.to_date(F.col(date_col)))
+
+    # Filter NULLs
+    df_normalized = df_normalized.filter(F.col(date_col).isNotNull())
 
     null_dates_count = df_normalized.filter(F.col(date_col).isNull()).count()
     if null_dates_count > 0:
