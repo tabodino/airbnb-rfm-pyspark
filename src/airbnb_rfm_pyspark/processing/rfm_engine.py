@@ -224,7 +224,9 @@ class RFMEngine:
         reference_date = F.lit(self.config.reference_date)
 
         rfm_agg = df_joined.groupBy("reviewer_id").agg(
-            F.datediff(reference_date, F.max("date")).alias("recency"),
+            F.greatest(F.lit(0), F.datediff(reference_date, F.max("date"))).alias(
+                "recency"
+            ),
             F.count("*").alias("frequency"),
             F.sum(F.col("price_cleaned") * self.config.avg_nights_per_booking).alias(
                 "monetary"

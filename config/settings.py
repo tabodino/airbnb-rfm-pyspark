@@ -34,10 +34,10 @@ class DataConfig(BaseSettings):
     )
 
     reviews_url: str = (
-        "https://data.insideairbnb.com/france/nouvelle-aquitaine/bordeaux/2025-09-18/data/listings.csv.gz"
+        "https://data.insideairbnb.com/france/pyr%C3%A9n%C3%A9es-atlantiques/pays-basque/2025-09-21/data/listings.csv.gz"
     )
     listings_url: str = (
-        "https://data.insideairbnb.com/france/nouvelle-aquitaine/bordeaux/2025-09-18/data/reviews.csv.gz"
+        "https://data.insideairbnb.com/france/pyr%C3%A9n%C3%A9es-atlantiques/pays-basque/2025-09-21/data/reviews.csv.gz"
     )
 
     data_dir: Path = Path("data")
@@ -73,12 +73,12 @@ class RFMConfig(BaseSettings):
     max_price_filter: float = 10000.0
 
     segment_rules: Dict[str, tuple[int, int, float]] = {
-        "Champions": (90, 5, 2000),  # Very recent + Frequent + High LTV
-        "Loyal": (180, 3, 1000),  # Moderately regular
-        "Potential": (90, 1, 500),  # Recent but infrequent
-        "At Risk": (365, 3, 1000),  # Former high‑value customers
-        "Hibernating": (730, 2, 500),  # Inactive for more than 2 years
-        "Lost": (730, 1, 100),  # Very old + low value
+        "Champions": (90, 5, 500),  # Very recent + Frequent + High LTV
+        "Loyal": (180, 3, 300),  # Moderately regular
+        "Potential": (365, 1, 50),  # Recent but infrequent
+        "At Risk": (730, 2, 100),  # Former high‑value customers
+        "Hibernating": (1000, 1, 10),  # Inactive for more than 2 years
+        "Lost": (1000, 0, 0),  # Very old + low value
     }
 
 
