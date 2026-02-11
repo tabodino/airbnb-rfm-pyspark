@@ -8,6 +8,7 @@
 ## 📋 Problem Statement
 
 In tourism, understanding competitors' customers like Airbnb is key to gaining market share, but transactional data is confidential. This project uses public data (Airbnb reviews and listings) to model market activity via RFM (Recency, Frequency, Monetary) analysis at scale with PySpark.
+
 ---
 
 ## 🎯 Objectives
