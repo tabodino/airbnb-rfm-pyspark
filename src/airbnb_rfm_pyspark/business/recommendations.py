@@ -35,7 +35,7 @@ class MarketingRecommendations:
     - ROI = (Incremental revenue - Campaign cost) / Campaign cost.[web:20][web:22]
     """
 
-    # Base average basket (e.g. Airbnb Paris 3 nights * 100€/night)
+    # Base average basket (e.g. Airbnb Pays Basque 3 nights * 100€/night)
     BASE_AVG_BASKET = 300.0
 
     # Per-channel unit costs (hypotheses; adapt to your context)
@@ -145,7 +145,7 @@ class MarketingRecommendations:
                 "channel": "Email Automation + Display Remarketing",
                 "offer": ("Réactivation : -25% + bon cadeau 30€ utilisable en 2 fois"),
                 "message": (
-                    "Paris vous manque ? Redécouvrez la ville avec -25% "
+                    "Le Pays Basque vous manque ? Redécouvrez la ville avec -25% "
                     "et un bon cadeau de 30€ pour vos prochains séjours."
                 ),
                 "priority": 2,

@@ -47,6 +47,7 @@ class RFMEngine:
                 quote='"',
                 escape="\\",
                 multiLine=True,
+                encoding="utf-8",
             )
             .select("listing_id", "reviewer_id", "date")
             .withColumn("listing_id", F.col("listing_id").cast("string"))
@@ -61,6 +62,7 @@ class RFMEngine:
                 quote='"',
                 escape="\\",
                 multiLine=True,
+                encoding="utf-8",
             )
             .select(
                 "id",
